@@ -7,7 +7,7 @@ begin
   Object.send(:define_method, method_name.to_s) do
     puts eval(code)
   end
-  eval "#{method_name}"
+  eval "#{ method_name }"
 rescue StandardError => e
   p e.message
 rescue ScriptError => e
