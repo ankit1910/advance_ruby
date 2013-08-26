@@ -1,16 +1,14 @@
 require_relative '../lib/code.rb'
+code = Code.new
 begin
   puts "\nPlease enter the code you want to evaluate"
-  code = ""
-  while true
+  loop do
     input = gets.chomp
-    break if input =~ /q/i or input.empty?
-    code << input + ';'
+    input.empty? ? break : code.append(input)
   end
-  obj = Code.new
   puts "your output is :"
-  puts obj.evaluate_code(code)
-rescue StandardError, SyntaxError
-  puts "You got something incorrect in you code"
+  puts code.evaluate
+rescue StandardError, SyntaxError 
+  puts "there is something wrong in your program"
   retry
 end
