@@ -1,2 +1,3 @@
-require_relative '../lib/calculator.rb'
-Calculator.calculate 5, :+, 7
+require_relative '../lib/binary_operation.rb'
+object = BinaryOperation.new
+puts object.calculate 8, :+, 7
