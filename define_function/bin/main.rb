@@ -4,7 +4,7 @@ puts "Enter One line  code you want to evaluate"
 code = gets.chomp
 puts "output :-"
 begin
-  Object.send(:define_method, method_name.to_s) do
+  Object.send(:define_method, method_name) do
     puts eval(code)
   end
   eval "#{ method_name }"
