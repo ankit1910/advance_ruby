@@ -1,11 +1,15 @@
 class SubString < String
+  private
   def exclude? match
-    !include? match
+    puts (!include? match)
   end
   def palindrome?
-    self == reverse
+    puts (self == reverse)
   end
   def count_vowel
-    scan(/[aeiou]/i).size
+    puts (scan(/[aeiou]/i).size)
+  end
+  def r_just num, k
+    rjust(Integer(num), k)
   end
 end
