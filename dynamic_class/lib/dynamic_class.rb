@@ -1,29 +1,64 @@
+require_relative 'csv_parser.rb'
+require_relative 'tabular.rb'
+
 class DynamicClass
-  def get_objects(name, file_path)
-    DynamicClass.const_set(name, Class.new)
-    first_row = true
-    objects = []
-    instance_variables = []
-    CSV.foreach(file_path) do |row|
-      if first_row
-        instance_variables = row
-        first_row = false
-        DynamicClass.const_get(name).class_eval do
-          instance_variables.each do |method_name|
-            define_method "display_#{ method_name }" do
-              puts "#{ method_name } : #{ instance_variable_get('@' + method_name) }"
-            end
-          end
-        end
-      else
-        values_instance_variable = row
-        size = row.size
-        objects << DynamicClass.const_get(name).new
-        for i in 0...size
-          objects.last.instance_variable_set(('@' + instance_variables[i]).to_sym, row[i])
+  attr_accessor :class_name, :instance_variables_array, :object_list
+
+  def initialize(file_name)
+    @data = get_file_data(file_name)
+    @class_name = get_class_name
+    @instance_variables_array = get_instance_varaibles
+    @object_list = []
+  end
+
+
+  def create_class
+    instances_array = instance_variables_array
+    rows = @data.rows
+    Object.const_set class_name, Class.new {
+      attr_accessor *instances_array
+      
+      define_method :initialize do |values|
+        instances_array.each_with_index do |instance, index|
+          send "#{ instance }=", values[index]
         end
       end
-    end
-    [objects, instance_variables]
+
+      define_method :display_all do
+        k = Tabular.new(instances_array, rows, nil)
+        k.display_table
+      end
+      
+      instances_array.each do |method_name|
+        define_method "display_#{ method_name }" do
+          puts "#{ method_name } : #{ self.send method_name }"
+        end
+      end
+    }
   end
+ 
+  def create_objects
+    klass = Object.const_get(class_name)
+    rows = @data.rows
+    rows.each do |row|      
+      obj = klass.new(row)
+      object_list << obj
+    end
+  end
+
+  private
+
+  def get_file_data(file_name)
+    CSVParser.new(file_name)
+  end
+
+  def get_class_name
+    name = @data.file_name.split(/[\.|_]/)
+    name.pop
+    name.each { |part| part.capitalize! }.join    
+  end
+
+  def get_instance_varaibles
+    @data.header
+  end  
 end
