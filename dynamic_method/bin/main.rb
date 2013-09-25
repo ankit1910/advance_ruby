@@ -1,4 +1,5 @@
 require_relative '../lib/sub_string.rb'
+
 puts "Enter the String to perform some operation on it"
 input = gets.chomp
 object = SubString.new(input)
@@ -8,9 +9,19 @@ method_name = gets.chomp
 method_args = []
 
 arity = object.method(method_name.to_sym).arity
-arity.times do |index|
-  puts "Enter #{ index + 1 } argument for method : #{ method_name }"
-  method_args << gets.chomp
+if arity < 0
+  index = 0
+  loop do
+    puts "Enter #{ index += 1 } argument for method : #{ method_name }"
+    input = gets.chomp
+    break if input.strip == ''
+    method_args << input
+  end
+else
+  arity.times do |index|
+    puts "Enter #{ index + 1 } argument for method : #{ method_name }"
+    method_args << gets.chomp
+  end
 end
 
 puts "output : "
