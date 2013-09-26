@@ -25,8 +25,7 @@ class DynamicClass
       end
 
       define_method :display_all do
-        k = Tabular.new(instances_array, rows, nil)
-        k.display_table
+        Tabular.new(instances_array, rows, nil).display_table
       end
       
       instances_array.each do |method_name|
@@ -59,6 +58,12 @@ class DynamicClass
   end
 
   def get_instance_varaibles
-    @data.header
-  end  
+    var = @data.header
+    var.collect! do |inst_var|
+      inst_var.downcase.gsub(/\W|\d/, '_')
+    end
+    var    
+  end
+
+
 end
